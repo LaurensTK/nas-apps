@@ -10,6 +10,7 @@ nas-apps/
 ├── README.md
 ├── .gitignore
 ├── deploy.ps1            uitrollen naar de NAS met één commando
+├── .vscode/tasks.json    VS Code-taak "Deploy app naar NAS"
 └── testweb/              testcontainer (nginx, poort 8200)
     ├── docker-compose.yml
     └── html/index.html
@@ -31,6 +32,8 @@ Na het committen rol je een app uit vanaf je pc (PowerShell, in deze map):
 ```
 
 Het script controleert eerst dat je op `main` staat, dat alles gecommit is en dat de app-map bestaat. Daarna pusht het, haalt het op de NAS de wijzigingen op (`git pull`) en start het de app (`sudo docker-compose up -d`). Tot slot toont het de status. Het draait alleen als jij het start: er is geen automatisch ophalen of Watchtower.
+
+In VS Code kan het ook met een taak: Ctrl+Shift+P, kies *Taken: taak uitvoeren* en dan *Deploy app naar NAS*. Vul de naam van de app in (standaard `testweb`). Het wachtwoord voor `sudo` typ je in de terminal die opent. De taak start PowerShell met `-ExecutionPolicy Bypass` alleen voor dit script, zodat Windows het niet blokkeert.
 
 Eenmalig instellen:
 1. Vul bovenaan `deploy.ps1` het IP-adres van de NAS in (`$NasAdres`).
