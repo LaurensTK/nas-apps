@@ -11,6 +11,8 @@ $ErrorActionPreference = "Stop"
 $NasAdres = "192.168.2.4"            # IP-adres van de NAS (zelfde als voor SSH)
 $NasGebruiker = "LaurensTK"     # je NAS-account
 $NasMap = "/volume1/docker/apps"
+# Volledig pad: bij één SSH-commando kent de NAS de zoekpaden van een gewone inlog niet.
+$ComposePad = "/usr/local/bin/docker-compose"
 # ------------------------------------------------
 
 # Stopt met een duidelijke melding.
@@ -49,7 +51,7 @@ if ($LASTEXITCODE -ne 0) { Stop-Met "git push is mislukt." }
 # 3 en 4. Op de NAS ophalen, starten en de status tonen.
 # 'ssh -t' zorgt dat sudo om je wachtwoord kan vragen; typ het zelf in.
 Write-Host "Uitrollen op de NAS (je wordt om je wachtwoord gevraagd)..." -ForegroundColor Cyan
-$opdracht = "cd $NasMap && git pull origin main && cd $App && sudo docker-compose up -d && sudo docker-compose ps"
+$opdracht = "cd $NasMap && git pull origin main && cd $App && sudo $ComposePad up -d && sudo $ComposePad ps"
 ssh -t "$NasGebruiker@$NasAdres" $opdracht
 if ($LASTEXITCODE -ne 0) { Stop-Met "het uitrollen op de NAS is mislukt (zie de melding hierboven)." }
 
