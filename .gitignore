@@ -1,0 +1,16 @@
+# Geheimen en lokale gegevens: nooit in Git
+.env
+*.env
+!.env.example
+
+# Databases en data van apps
+data/
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs en rommel
+*.log
+.DS_Store
+Thumbs.db
+@eaDir/

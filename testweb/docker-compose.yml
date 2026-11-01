@@ -1,0 +1,19 @@
+# Testcontainer: een simpele webpagina met nginx.
+# Los van de mediastack: eigen map, eigen netwerk, eigen poort.
+services:
+  testweb:
+    image: nginx:alpine
+    container_name: testweb
+    restart: unless-stopped
+    ports:
+      - "8200:80"
+    volumes:
+      - ./html:/usr/share/nginx/html:ro
+    mem_limit: 64m
+    cpus: 0.25
+    networks:
+      - testweb-net
+
+networks:
+  testweb-net:
+    name: testweb-net
