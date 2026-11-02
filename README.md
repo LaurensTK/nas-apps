@@ -11,10 +11,16 @@ nas-apps/
 ├── .gitignore
 ├── deploy.ps1            uitrollen naar de NAS met één commando
 ├── .vscode/tasks.json    VS Code-taak "Deploy app naar NAS"
+├── caddy/                reverse proxy (Caddy, poort 8300)
+│   ├── docker-compose.yml
+│   └── conf/Caddyfile
 └── testweb/              testcontainer (nginx, poort 8200)
     ├── docker-compose.yml
     └── html/index.html
 ```
+
+## Bereikbaar via Tailscale
+Apps zijn bereikbaar op `http://nas-laurens:8300/<appnaam>/`, via de reverse proxy in `caddy/`. Zie `caddy/README.md`.
 
 ## Afspraken
 - Geheimen alleen in `.env` naast het compose-bestand; `.env` staat in `.gitignore`. Zet een voorbeeld zonder echte waarden in `.env.example`.
@@ -22,7 +28,7 @@ nas-apps/
 - `cpus` werkt niet op deze NAS: Docker geeft de fout "NanoCPUs can not be set, as your kernel does not support CPU CFS scheduler". Gebruik het niet.
 - Geen app via gluetun en geen app publiek bereikbaar.
 - Op de NAS heet het commando `docker-compose` (met streepje) en is `sudo` nodig.
-- Poorten die al bezet zijn: 6881, 6246, 7878, 8080, 8090, 8099, 8191, 8989. Kies een andere, bijvoorbeeld 82xx.
+- Poorten die al bezet zijn: 6881, 6246, 7878, 8080, 8090, 8099, 8191, 8200 (testweb), 8300 (caddy), 8989. Kies een andere, bijvoorbeeld 82xx.
 
 ## Uitrollen met één commando
 Na het committen rol je een app uit vanaf je pc (PowerShell, in deze map):
