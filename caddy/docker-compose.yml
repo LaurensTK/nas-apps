@@ -1,4 +1,4 @@
-# Reverse proxy: één adres (http://nas-laurens:8300) met een pad per app.
+# Reverse proxy: één adres (http://system-nas:8300) met een pad per app.
 # Eigen map, eigen netwerk, eigen poort. Alleen bereikbaar via Tailscale en het thuisnetwerk.
 # Start eerst de apps waar Caddy naar doorstuurt (zij maken hun eigen netwerk aan).
 services:

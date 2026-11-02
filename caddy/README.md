@@ -2,10 +2,10 @@
 
 Reverse proxy voor de apps op de NAS. Eén adres, een pad per app:
 
-- `http://nas-laurens:8300/ping` laat zien dat Caddy draait
-- `http://nas-laurens:8300/testweb/` is de testcontainer
+- `http://system-nas:8300/ping` laat zien dat Caddy draait
+- `http://system-nas:8300/testweb/` is de testcontainer
 
-`nas-laurens` is de MagicDNS-naam uit Tailscale; je telefoon en pc moeten dus in Tailscale zitten. Het is alleen HTTP: Tailscale versleutelt het verkeer al, en zo komen je machinenamen niet in openbare certificaatregisters. De poort is niet open naar internet.
+`system-nas` is de MagicDNS-naam uit Tailscale; je telefoon en pc moeten dus in Tailscale zitten. Het is alleen HTTP: Tailscale versleutelt het verkeer al, en zo komen je machinenamen niet in openbare certificaatregisters. De poort is niet open naar internet.
 
 ## Een app toevoegen
 1. Zorg dat de app in zijn eigen compose-bestand draait en dat de proxy hem kan bereiken: voeg in `docker-compose.yml` het netwerk van de app toe (als `external: true`, zoals bij `testweb-net`).
