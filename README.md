@@ -28,7 +28,7 @@ Apps zijn bereikbaar op `http://nas-laurens:8300/<appnaam>/`, via de reverse pro
 - `cpus` werkt niet op deze NAS: Docker geeft de fout "NanoCPUs can not be set, as your kernel does not support CPU CFS scheduler". Gebruik het niet.
 - Geen app via gluetun en geen app publiek bereikbaar.
 - Op de NAS heet het commando `docker-compose` (met streepje) en is `sudo` nodig.
-- Poorten die al bezet zijn: 6881, 6246, 7878, 8080, 8090, 8099, 8191, 8200 (testweb), 8300 (caddy), 8989. Kies een andere, bijvoorbeeld 82xx.
+- Poorten die al bezet zijn: 6881, 6246, 7878, 8080, 8090, 8099, 8191, 8200 (testweb), 8300 (caddy), 8400 (backlog-app), 8989. Kies een andere, bijvoorbeeld 82xx.
 
 ## Uitrollen met één commando
 Na het committen rol je een app uit vanaf je pc (PowerShell, in deze map):
@@ -39,7 +39,20 @@ Na het committen rol je een app uit vanaf je pc (PowerShell, in deze map):
 
 Het script controleert eerst dat je op `main` staat, dat alles gecommit is en dat de app-map bestaat. Daarna pusht het, haalt het op de NAS de wijzigingen op (`git pull`) en start het de app (`sudo docker-compose up -d`). Tot slot toont het de status. Het draait alleen als jij het start: er is geen automatisch ophalen of Watchtower.
 
-In VS Code kan het ook met een taak: Ctrl+Shift+P, kies *Taken: taak uitvoeren* en dan *Deploy app naar NAS*. Vul de naam van de app in (standaard `testweb`). Het wachtwoord voor `sudo` typ je in de terminal die opent. De taak start PowerShell met `-ExecutionPolicy Bypass` alleen voor dit script, zodat Windows het niet blokkeert.
+### De backlog-app
+De backlog-app staat in een eigen repo (`..\Backlog-App`) en wordt anders uitgerold: het image wordt op de pc gebouwd (spaart de NAS-processor) en naar de NAS gebracht.
+
+```powershell
+.\deploy.ps1 backlog-app
+```
+
+Het script controleert eerst dat Docker Desktop draait, dat de backlog-app op `main` staat zonder ongecommitte wijzigingen, en dat op de NAS de map `backlog-app` met `.env` en `data/` bestaat (stap 1 in `docs\NAS-UITROL.md` van de backlog-app, die maak je zelf). Daarna bouwt het het image, zet het in een tar-bestand, kopieert dat samen met `docker-compose.yml` naar `/volume1/docker/apps/backlog-app/`, laadt het op de NAS en start de container (`up -d --no-build`, poort 8400). Je typt alleen het `sudo`-wachtwoord. Tot slot controleert het `http://<nas-ip>:8400/health`.
+
+Het script leest of overschrijft `.env` op de NAS nooit en wist `data/` (de database) nooit; het kopieert alleen `backlog-app.tar` en `docker-compose.yml`. Het oude tar-bestand blijft op de NAS staan en wordt de volgende keer overschreven. Het kopiëren gaat via SSH (niet via `scp`), zodat de SFTP-service van de Synology niet nodig is.
+
+Controleer eenmalig dat het pad `$DockerPad` bovenaan het script klopt: log in op de NAS en draai `which docker`.
+
+In VS Code kan het ook met een taak: Ctrl+Shift+P, kies *Taken: taak uitvoeren* en dan *Deploy app naar NAS*. Vul de naam van de app in (standaard `testweb`; voor de backlog-app typ je `backlog-app`). Het wachtwoord voor `sudo` typ je in de terminal die opent. De taak start PowerShell met `-ExecutionPolicy Bypass` alleen voor dit script, zodat Windows het niet blokkeert.
 
 Eenmalig instellen:
 1. Vul bovenaan `deploy.ps1` het IP-adres van de NAS in (`$NasAdres`).

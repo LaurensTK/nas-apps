@@ -9,6 +9,10 @@ data/
 *.sqlite
 *.sqlite3
 
+# De backlog-app draait in /volume1/docker/apps/backlog-app op de NAS, maar staat niet in deze repo
+backlog-app/
+*.tar
+
 # Logs en rommel
 *.log
 .DS_Store
