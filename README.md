@@ -20,7 +20,22 @@ nas-apps/
 ```
 
 ## Bereikbaar via Tailscale
-Apps zijn bereikbaar op `http://nas-laurens:8300/<appnaam>/`, via de reverse proxy in `caddy/`. Zie `caddy/README.md`.
+Apps zijn bereikbaar op `http://system-nas:8300/<appnaam>/`, via de reverse proxy in `caddy/`. Zie `caddy/README.md`.
+
+### HTTPS voor een app (PWA)
+Een app die als PWA op de telefoon moet, heeft HTTPS nodig. Dat regelt Tailscale zelf, zonder Caddy: de app staat dan op de root van een eigen HTTPS-poort, alleen binnen het tailnet (niet op internet). Eenmalig: *Enable HTTPS* op de DNS-pagina van de Tailscale-console. Let op: de machinenaam komt daarna in een openbaar certificaatregister (Certificate Transparency), dus hernoem de NAS eerst als de naam persoonlijk is.
+
+Op de NAS, via SSH:
+
+```bash
+sudo tailscale serve --bg --https=8443 localhost:8400
+```
+
+Dit is voor de backlog-app (poort 8400); kies per app een eigen HTTPS-poort. Het adres wordt `https://system-nas.<tailnet>.ts.net:8443/`. Controleren: `tailscale serve status`. Uitzetten: `sudo tailscale serve --https=8443 off`. De instelling blijft na een herstart staan.
+
+### Bekend probleem op de telefoon
+Android staat één VPN tegelijk toe. Beheert je werk de Defender-app met webbeveiliging, dan schopt die Tailscale eruit. Thuis kan het dan nog via het IP-adres met poort (bijvoorbeeld `http://<NAS-IP>:8300/testweb/`).
+
 
 ## Afspraken
 - Geheimen alleen in `.env` naast het compose-bestand; `.env` staat in `.gitignore`. Zet een voorbeeld zonder echte waarden in `.env.example`.
