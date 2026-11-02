@@ -1,0 +1,17 @@
+# Geen HTTPS en geen certificaten: het verkeer loopt al versleuteld over Tailscale.
+{
+	auto_https off
+}
+
+:80 {
+	# Startpagina om te zien dat de proxy draait
+	handle /ping {
+		respond "Caddy werkt" 200
+	}
+
+	# testweb: /testweb wordt /testweb/ en het pad wordt eraf gehaald
+	redir /testweb /testweb/
+	handle_path /testweb/* {
+		reverse_proxy testweb:80
+	}
+}

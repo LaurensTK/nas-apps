@@ -1,0 +1,32 @@
+# Reverse proxy: één adres (http://nas-laurens:8300) met een pad per app.
+# Eigen map, eigen netwerk, eigen poort. Alleen bereikbaar via Tailscale en het thuisnetwerk.
+# Start eerst de apps waar Caddy naar doorstuurt (zij maken hun eigen netwerk aan).
+services:
+  caddy:
+    image: caddy:2.11.7-alpine
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "8300:80"
+    volumes:
+      # De hele map, niet alleen het bestand (zie README)
+      - ./conf:/etc/caddy:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    mem_limit: 64m
+    # cpus: werkt niet op deze NAS (kernel zonder CFS-planner); zie README in de hoofdmap
+    networks:
+      - caddy-net
+      - testweb-net
+
+volumes:
+  caddy_data:
+  caddy_config:
+
+networks:
+  caddy-net:
+    name: caddy-net
+  # Netwerk van testweb, zodat Caddy die container kan bereiken
+  testweb-net:
+    external: true
+    name: testweb-net
